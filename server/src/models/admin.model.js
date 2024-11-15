@@ -1,29 +1,30 @@
 import mongoose, {Schema} from "mongoose";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const adminSchema = new Schema({
     admin_name:{
         type: String,
         required: true,
-        unique: true,
+        unique: true
     },
     admin_email: {
         type: String,
         required: true,
         unique: true,
-        lowercase: true,
-        index: true,
-    },
-    organization_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Organization',
-        required: true 
     },
     admin_password: { 
         type: String,
         required: true
     },
-    otpcode: {
+    organization_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Organization",
+        required: true
+    },
+    otpcode:{
         type: String,
+        default: ""
     },
     two_factor_enabled: {
         type: Boolean,
@@ -33,11 +34,12 @@ const adminSchema = new Schema({
     timestamps:true
 })
 
-
-adminSchema.pre("save", function(next){
+adminSchema.pre("save", async function (next) {
     if(!this.isModified("admin_password")) return next();
-    this.admin_password = bcrypt.hash(this.admin_password, 10);
+    this.admin_password = await bcrypt.hash(this.admin_password, 10)
+    next()
 })
+
 
 adminSchema.methods.isPasswordCorrect = async function (admin_password) {
     return await bcrypt.compare(admin_password, this.admin_password);

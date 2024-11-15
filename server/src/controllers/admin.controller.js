@@ -1,14 +1,33 @@
-import { ApiResponse } from "../utils/ApiResponse"
-import { asyncHandler } from "../utils/asyncHandler"
+import { Admin } from "../models/admin.model.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js"
+import { asyncHandler } from "../utils/asyncHandler.js"
 
 const registerAdmin = asyncHandler( async (req, res) => {
-    // const {}
+    const {admin_name, admin_email, admin_password, organization_id} = req.body;
 
-    const admin = "";
+    if ([admin_name, admin_email, admin_password, organization_id].some((field) => field?.trim() === "")){
+        throw new ApiError(400, "All admin fields are required")
+    }
+
+    const admin = await Admin.create({
+        admin_name: admin_name,
+        admin_email: admin_email,
+        admin_password: admin_password,
+        organization_id: organization_id,
+    });
+
+    const createdAdmin = await Admin.findOne(admin._id).select(
+        "-admin_password"
+    );
 
     res.status(201).json(
-        new ApiResponse(200, admin, "Admin successfully registered")
+        new ApiResponse(200, createdAdmin, "Admin successfully registered")
     )
+})
+
+const loginUser = asyncHandler( async (req, res) => {
+    
 })
 
 export {registerAdmin};
