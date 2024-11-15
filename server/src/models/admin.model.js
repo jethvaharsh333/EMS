@@ -6,6 +6,13 @@ const adminSchema = new Schema({
         required: true,
         unique: true,
     },
+    admin_email: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true,
+        index: true,
+    },
     organization_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Organization',
