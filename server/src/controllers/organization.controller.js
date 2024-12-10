@@ -11,7 +11,6 @@ const registerOrganization = asyncHandler( async (req, res) => {
     }
 
     const org_name = organization_name.toLowerCase();
-    // console.log(org_name);
 
     const organization = await Organization.create({
         organization_name: org_name,

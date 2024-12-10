@@ -22,10 +22,6 @@ const adminSchema = new Schema({
         ref: "Organization",
         required: true
     },
-    otpcode:{
-        type: String,
-        default: ""
-    },
     two_factor_enabled: {
         type: Boolean,
         default: true
